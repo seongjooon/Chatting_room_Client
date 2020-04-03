@@ -1,33 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const textMap = {
   login: '로그인',
   register: '회원가입'
 };
 
-const AuthForm = ({ type }) => {
+const AuthForm = ({ type, registerData, onChange, onSubmit, error }) => {
 	const text = textMap[type];
-	const [username, setUsername] = useState('');
-	const [password, setPassword] = useState('');
-	const [passwordConfirm, setPasswordConfirm] = useState('');
 	
 	return (
-		<form>
+		<form onSubmit={onSubmit}>
 			<h3>{text}</h3>
 			<input
 			  autoComplete="username"
 			  name="username"
 			  placeholder="아이디"
-			  value={username}
-			  onChange={e => setUsername(e.target.value)}
+			  value={registerData.username}
+			  onChange={onChange}
 			/>
 			<input
 			  autoComplete="new-password"
 			  name="password"
 			  placeholder="비밀번호"
 			  type="password"
-			  value={password}
-			  onChange={e => setPassword(e.target.value)}
+			  value={registerData.password}
+			  onChange={onChange}
 			/>
 			{type === 'register' && (
 			  <input
@@ -35,10 +32,11 @@ const AuthForm = ({ type }) => {
 				name="passwordConfirm"
 				placeholder="비밀번호 확인"
 				type="password"
-				value={passwordConfirm}
-			    onChange={e => setPasswordConfirm(e.target.value)}
+				value={registerData.passwordConfirm}
+			    onChange={onChange}
 			  />
 			)}
+			{error && <h1>{error}</h1>}
 			<button>{text}</button>
 		</form>
 	);
