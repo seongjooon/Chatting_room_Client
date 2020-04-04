@@ -1,1 +1,1 @@
-export const SERVER_API = 'http://localhost:4000';
+export const SERVER_API = 'https://chatting-room-client-pgtys.run.goorm.io/';
