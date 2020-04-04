@@ -1,27 +1,25 @@
 const express = require('express');
 const router = express.Router();
-// const User = require('../models/user');
+const User = require('../models/user');
 
-router.post('/register', async (req, res, next) => {
+router.post('/register', async ctx => {
+  const { username, password } = ctx.request.body;
   try {
-    console.log('Line 8: ', req.body);
-    const userData = {
-      username: req.body.username,
-      password: req.body.password
-    };
-    // let user = await User.findOne({
-    //   email: req.body.email
-    // });
+    // username  이 이미 존재하는지 확인
+    const exists = await User.findByUsername(username);
+    if (exists) {
+      ctx.status = 409; // Conflict
+      return;
+    }
 
-    // if (!user) {
-    //   user = new User(userData);
-    //   await user.save();
-    // }
+    const user = new User({ username });
+    await user.setPassword(password); // 비밀번호 설정
+    await user.save(); // 데이터베이스에 저장
 
-    res.send({ result: 'ok', user });
-  } catch (err) {
-    console.log(err);
-    next(err);
+    ctx.body = user.serialize();
+
+  } catch (e) {
+    ctx.throw(500, e);
   }
 });
 
