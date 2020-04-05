@@ -24,7 +24,12 @@ const users = require('./routes/users');
 const app = express();
 
 app.use(logger('dev'));
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+app.use(
+	cors({
+		origin: process.env.CLIENT_URL,
+		credentials: true 
+	})
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -50,6 +55,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.listen(process.env.PORT || 5000, () => console.log(`Listening on port ${process.env.PORT}!`));
+const PORT = 6000;
+app.listen(PORT, () => console.log(`Listening on port ${PORT}!`));
 
 module.exports = app;

@@ -1,18 +1,10 @@
 const mongoose = require('mongoose');
-
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const UserSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    unique: true,
-    required: true,
-    trim: true
-  },
-  password: {
-    type: String,
-    required: true,
-    trim: true
-  }
+	username: String,
+  hashedPassword: String
 });
 
 
@@ -45,7 +37,6 @@ UserSchema.methods.generateToken = function() {
 UserSchema.statics.findByUsername = function(username) {
   return this.findOne({ username });
 };
-
 
 const User = mongoose.model('User', UserSchema);
 module.exports = User;
