@@ -5,6 +5,7 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const session = require('express-session');
 const mongoose = require('mongoose');
 const db = mongoose.connection;
 
@@ -35,7 +36,27 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+const IN_PROD = process.env.NODE_ENV === 'production';
+
+app.use(session({
+	name: process.env.SESS_NAME,
+	resave: false,
+	saveUninitialized: false,
+	secret: process.env.SESS_SECRET,
+	cookie: {
+		maxAge: 1000 * 60 * 60 * 2,
+		sameSite: true,
+		secure: IN_PROD
+	}
+}));
+
 app.use('/users', users);
+
+app.use('/', (req, res, next) => {
+	const { userId } = req.session;
+	if (userId) console.log('user id:', userId);
+	res.json({ isValidateSess: userId });
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -52,7 +73,6 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
 });
 
 const PORT = 6000;
