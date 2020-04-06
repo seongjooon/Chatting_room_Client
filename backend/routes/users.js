@@ -74,4 +74,14 @@ router.post('/login', Authorization.redirectHome, async (req, res, next) => {
   }
 });
 
+router.post('/logout', Authorization.redirectLogin, async (req, res, next) => {
+	req.session.destroy(err => {
+		if (err)  {
+			res.json({message: 'Logout'});
+		}
+		res.clearCookie(process.env.SESS_NAME);
+		res.json({message: 'Login'});
+	})
+});
+
 module.exports = router;
