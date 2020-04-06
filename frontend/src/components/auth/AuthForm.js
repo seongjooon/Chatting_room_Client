@@ -1,44 +1,57 @@
 import React from 'react';
+import { Button } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import './AuthForm.scss';
 
-const textMap = {
-  login: '로그인',
-  register: '회원가입'
+const authMap = {
+  login: ['로그인', 'info'],
+  register: ['회원가입','danger']
 };
 
-const AuthForm = ({ type, registerData, onChange, onSubmit, error }) => {
-	const text = textMap[type];
+const AuthForm = ({ type, userData, onChange, onSubmit, error }) => {
+	const text = authMap[type][0];
+	const authColor = authMap[type][1];
 	
 	return (
-		<form onSubmit={onSubmit}>
-			<h3>{text}</h3>
-			<input
-			  autoComplete="username"
-			  name="username"
-			  placeholder="아이디"
-			  value={registerData.username}
-			  onChange={onChange}
-			/>
-			<input
-			  autoComplete="new-password"
-			  name="password"
-			  placeholder="비밀번호"
-			  type="password"
-			  value={registerData.password}
-			  onChange={onChange}
-			/>
-			{type === 'register' && (
-			  <input
-				autoComplete="new-password"
-				name="passwordConfirm"
-				placeholder="비밀번호 확인"
-				type="password"
-				value={registerData.passwordConfirm}
-			    onChange={onChange}
-			  />
-			)}
-			{error && <h1>{error}</h1>}
-			<button>{text}</button>
-		</form>
+		<div class='auth-form-block'>
+			<form onSubmit={onSubmit}>
+				<h3>{text}</h3>
+				<input
+					autoComplete="username"
+					name="username"
+					placeholder="아이디"
+					value={userData.username}
+					onChange={onChange}
+				/>
+				<input
+					autoComplete="new-password"
+					name="password"
+					placeholder="비밀번호"
+					type="password"
+					value={userData.password}
+					onChange={onChange}
+				/>
+				{type === 'register' && (
+					<input
+					autoComplete="new-password"
+					name="passwordConfirm"
+					placeholder="비밀번호 확인"
+					type="password"
+					value={userData.passwordConfirm}
+						onChange={onChange}
+					/>
+				)}
+				{error && <div class='error-message'>{error}</div>}
+				<Button color={`${authColor}`}>{text}</Button>
+			</form>
+			<div class='auth-footer'>
+        {type === 'login' ? (
+          <Link to="/register">회원가입</Link>
+        ) : (
+          <Link to="/login">로그인</Link>
+        )}
+      </div>
+		</div>
 	);
 }
 

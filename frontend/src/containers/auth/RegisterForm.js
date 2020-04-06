@@ -7,7 +7,7 @@ const RegisterForm = () => {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [passwordConfirm, setPasswordConfirm] = useState('');
-	const registerData = { username, password, passwordConfirm };
+	const userData = { username, password, passwordConfirm };
 	
 	const onChange = e => {
 		const { value, name } = e.target;
@@ -18,7 +18,7 @@ const RegisterForm = () => {
 	
 	const onSubmit = e => {
 		e.preventDefault();
-		const { username, password, passwordConfirm } = registerData;
+		const { username, password, passwordConfirm } = userData;
 
 		if ([username, password, passwordConfirm].includes('')) {
 			setError('빈 칸을 모두 입력하세요.');
@@ -30,16 +30,24 @@ const RegisterForm = () => {
 			setPasswordConfirm('');
 			return;
 		}
-		setError('참 잘했어요.');//api call { username, password }
-		registerAPI({ username, password })
-			.then(res => console.log(res))
-			.catch(err => console.log(err));;
+		 registerAPI({ username, password })
+			.then(res => res)
+			.catch(err => {
+				if (err) {
+					if (err.response.status === 409) {
+						setError('이미 존재하는 계정명입니다.');
+						return;
+					}
+					setError('회원가입 실패');
+					return;
+				}
+		 })
 	};
 	
 	return (
 		<AuthForm	
 		type="register"
-		registerData={registerData}
+		userData={userData}
 		onChange={onChange}
 		onSubmit={onSubmit}
 		error={error}
